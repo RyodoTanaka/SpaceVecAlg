@@ -26,7 +26,7 @@ build_script:
 
     setup_build
 
-    ./.travis/dependencies/eigen-3.2.ps1
+    ./.travis/dependencies/eigen-3.3.ps1
 
     install_dependencies
 
