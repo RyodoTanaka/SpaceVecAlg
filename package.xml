@@ -17,9 +17,11 @@
   <build_depend>cmake</build_depend>
   <build_depend>boost</build_depend>
   <build_depend>eigen</build_depend>
-
+  <build_depend>eigen3_to_python</build_depend>
+  
   <run_depend>boost</run_depend>
   <run_depend>eigen</run_depend>
+  <exec_depend>eigen3_to_python</exec_depend>
 
   <export>
     <build_type>cmake</build_type>
