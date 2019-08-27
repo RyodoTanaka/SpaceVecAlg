@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package>
+  <name>space_vec_alg</name>
+  <version>1.0.0</version>
+  <description>SpaceVecAlg aim to implement Spatial Vector Algebra with the Eigen3 linear algebra library.</description>
+  <maintainer email="jrl-info-ml@aist.go.jp">CNRS-UM LIRMM, CNRS-AIST JRL</maintainer>
+  <license>BSD</license>
+
+  <url type="website">https://github.com/jrl-umi3218/SpaceVecAlg</url>
+  <url type="bugtracker">https://github.com/jrl-umi3218/SpaceVecAlg/issues</url>
+  <url type="repository">https://github.com/jrl-umi3218/SpaceVecAlg</url>
+
+  <author>CNRS-UM LIRMM, CNRS-AIST JRL</author>
+
+  <buildtool_depend>cmake</buildtool_depend>
+
+  <build_depend>cmake</build_depend>
+  <build_depend>boost</build_depend>
+  <build_depend>eigen</build_depend>
+
+  <run_depend>boost</run_depend>
+  <run_depend>eigen</run_depend>
+
+  <export>
+    <build_type>cmake</build_type>
+  </export>
+</package>
