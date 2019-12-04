@@ -26,8 +26,7 @@
 
 typedef Eigen::Matrix<double, 6, Eigen::Dynamic> Matrix6Xd;
 
-BOOST_AUTO_TEST_CASE(PTransfromd_PTransformd)
-{
+BOOST_AUTO_TEST_CASE(PTransfromd_PTransformd) {
   using namespace sva;
 
   const std::size_t size = 10000000;
@@ -38,16 +37,14 @@ BOOST_AUTO_TEST_CASE(PTransfromd_PTransformd)
   std::cout << "PTransform vs PTransform" << std::endl;
   {
     boost::timer::auto_cpu_timer t;
-    for(std::size_t i = 0; i < size; ++i)
-    {
+    for (std::size_t i = 0; i < size; ++i) {
       ptRes[i] = pt1[i] * pt2[i];
     }
   }
   std::cout << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(PTransfromd_MotionVec)
-{
+BOOST_AUTO_TEST_CASE(PTransfromd_MotionVec) {
   using namespace sva;
 
   const std::size_t size = 10000000;
@@ -58,16 +55,14 @@ BOOST_AUTO_TEST_CASE(PTransfromd_MotionVec)
   std::cout << "PTransform vs MotionVec" << std::endl;
   {
     boost::timer::auto_cpu_timer t;
-    for(std::size_t i = 0; i < size; ++i)
-    {
+    for (std::size_t i = 0; i < size; ++i) {
       mvRes[i] = pt1[i] * mv[i];
     }
   }
   std::cout << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(PTransfromd_MotionEigen)
-{
+BOOST_AUTO_TEST_CASE(PTransfromd_MotionEigen) {
   using namespace sva;
 
   const std::size_t size = 10000000;
@@ -79,16 +74,14 @@ BOOST_AUTO_TEST_CASE(PTransfromd_MotionEigen)
   std::cout << "PTransform vs MotionEigen" << std::endl;
   {
     boost::timer::auto_cpu_timer t;
-    for(std::size_t i = 0; i < size; ++i)
-    {
+    for (std::size_t i = 0; i < size; ++i) {
       pt1[i].mul(mv[i], mvRes[i]);
     }
   }
   std::cout << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(PTransfromd_as_matrix_MotionEigen)
-{
+BOOST_AUTO_TEST_CASE(PTransfromd_as_matrix_MotionEigen) {
   using namespace sva;
 
   const std::size_t size = 10000000;
@@ -100,16 +93,14 @@ BOOST_AUTO_TEST_CASE(PTransfromd_as_matrix_MotionEigen)
   std::cout << "PTransform as matrix vs MotionEigen" << std::endl;
   {
     boost::timer::auto_cpu_timer t;
-    for(std::size_t i = 0; i < size; ++i)
-    {
+    for (std::size_t i = 0; i < size; ++i) {
       mvRes[i].noalias() = pt1[i].matrix() * mv[i];
     }
   }
   std::cout << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(PTransfromd_MotionEigen_as_motion)
-{
+BOOST_AUTO_TEST_CASE(PTransfromd_MotionEigen_as_motion) {
   using namespace sva;
 
   const std::size_t size = 10000000;
@@ -121,19 +112,17 @@ BOOST_AUTO_TEST_CASE(PTransfromd_MotionEigen_as_motion)
   std::cout << "PTransform vs MotionEigen as MotionVec" << std::endl;
   {
     boost::timer::auto_cpu_timer t;
-    for(std::size_t i = 0; i < size; ++i)
-    {
-      for(std::size_t j = 0; j < cols; ++j)
-      {
-        mvRes[i].col(j).noalias() = (pt1[i] * MotionVecd(mv[i].col(j))).vector();
+    for (std::size_t i = 0; i < size; ++i) {
+      for (std::size_t j = 0; j < cols; ++j) {
+        mvRes[i].col(j).noalias() =
+            (pt1[i] * MotionVecd(mv[i].col(j))).vector();
       }
     }
   }
   std::cout << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(PTransfromd_inv_MotionVec)
-{
+BOOST_AUTO_TEST_CASE(PTransfromd_inv_MotionVec) {
   using namespace sva;
 
   const std::size_t size = 10000000;
@@ -144,16 +133,14 @@ BOOST_AUTO_TEST_CASE(PTransfromd_inv_MotionVec)
   std::cout << "PTransform_inv vs MotionVec" << std::endl;
   {
     boost::timer::auto_cpu_timer t;
-    for(std::size_t i = 0; i < size; ++i)
-    {
+    for (std::size_t i = 0; i < size; ++i) {
       mvRes[i] = pt1[i].inv() * mv[i];
     }
   }
   std::cout << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(PTransfromd_invMul_MotionVec)
-{
+BOOST_AUTO_TEST_CASE(PTransfromd_invMul_MotionVec) {
   using namespace sva;
 
   const std::size_t size = 10000000;
@@ -164,16 +151,14 @@ BOOST_AUTO_TEST_CASE(PTransfromd_invMul_MotionVec)
   std::cout << "PTransform_invMul vs MotionVec" << std::endl;
   {
     boost::timer::auto_cpu_timer t;
-    for(std::size_t i = 0; i < size; ++i)
-    {
+    for (std::size_t i = 0; i < size; ++i) {
       mvRes[i] = pt1[i].invMul(mv[i]);
     }
   }
   std::cout << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(PTransfromd_dual_ForceVec)
-{
+BOOST_AUTO_TEST_CASE(PTransfromd_dual_ForceVec) {
   using namespace sva;
 
   const std::size_t size = 10000000;
@@ -184,16 +169,14 @@ BOOST_AUTO_TEST_CASE(PTransfromd_dual_ForceVec)
   std::cout << "PTransform dual vs ForceVec" << std::endl;
   {
     boost::timer::auto_cpu_timer t;
-    for(std::size_t i = 0; i < size; ++i)
-    {
+    for (std::size_t i = 0; i < size; ++i) {
       mvRes[i] = pt1[i].dualMul(mv[i]);
     }
   }
   std::cout << std::endl;
 }
 
-BOOST_AUTO_TEST_CASE(PTransfromd_trans_ForceVec)
-{
+BOOST_AUTO_TEST_CASE(PTransfromd_trans_ForceVec) {
   using namespace sva;
 
   const std::size_t size = 10000000;
@@ -204,8 +187,7 @@ BOOST_AUTO_TEST_CASE(PTransfromd_trans_ForceVec)
   std::cout << "PTransform trans vs ForceVec" << std::endl;
   {
     boost::timer::auto_cpu_timer t;
-    for(std::size_t i = 0; i < size; ++i)
-    {
+    for (std::size_t i = 0; i < size; ++i) {
       mvRes[i] = pt1[i].transMul(mv[i]);
     }
   }

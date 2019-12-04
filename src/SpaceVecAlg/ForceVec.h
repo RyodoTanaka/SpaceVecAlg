@@ -6,8 +6,7 @@
 
 #include <type_traits>
 
-namespace sva
-{
+namespace sva {
 
 using namespace Eigen;
 
@@ -15,9 +14,7 @@ using namespace Eigen;
  * Spatial Force Vector compact representations.
  * See Roy Featherstone «Rigid Body Dynamics Algorithms» page 247.
  */
-template<typename T>
-class ForceVec
-{
+template <typename T> class ForceVec {
 public:
   typedef Vector3<T> vector3_t;
   typedef Vector6<T> vector6_t;
@@ -26,8 +23,7 @@ public:
 
 public:
   /// Zero force vector
-  static ForceVec<T> Zero()
-  {
+  static ForceVec<T> Zero() {
     return ForceVec<T>(vector3_t::Zero(), vector3_t::Zero());
   }
 
@@ -35,13 +31,15 @@ public:
   ForceVec() : couple_(), force_() {}
 
   /// @param vec Spatial force vector with couple in head and force in tail.
-  ForceVec(const vector6_t & vec) : couple_(vec.template head<3>()), force_(vec.template tail<3>()) {}
+  ForceVec(const vector6_t &vec)
+      : couple_(vec.template head<3>()), force_(vec.template tail<3>()) {}
 
   /**
    * @param couple Couple.
    * @param force Force.
    */
-  ForceVec(const vector3_t & couple, const vector3_t & force) : couple_(couple), force_(force) {}
+  ForceVec(const vector3_t &couple, const vector3_t &force)
+      : couple_(couple), force_(force) {}
 
   // Accessor
   /// @return Couple
@@ -52,99 +50,68 @@ public:
   /// <https://en.wikipedia.org/wiki/Couple_(mechanics)>.
   ///
   /// @sa moment()
-  vector3_t & couple()
-  {
-    return couple_;
-  }
+  vector3_t &couple() { return couple_; }
 
-  const vector3_t & couple() const
-  {
-    return couple_;
-  }
+  const vector3_t &couple() const { return couple_; }
 
   /// @return Moment
-  vector3_t & moment()
-  {
-    return couple_;
-  }
+  vector3_t &moment() { return couple_; }
 
-  const vector3_t & moment() const
-  {
-    return couple_;
-  }
+  const vector3_t &moment() const { return couple_; }
 
   /// @return Force
-  vector3_t & force()
-  {
-    return force_;
-  }
+  vector3_t &force() { return force_; }
 
-  const vector3_t & force() const
-  {
-    return force_;
-  }
+  const vector3_t &force() const { return force_; }
 
   /// @return Non compact spatial force vector.
-  vector6_t vector() const
-  {
+  vector6_t vector() const {
     return ((vector6_t() << couple_, force_).finished());
   }
 
-  template<typename T2>
-  ForceVec<T2> cast() const
-  {
-    return ForceVec<T2>(couple_.template cast<T2>(), force_.template cast<T2>());
+  template <typename T2> ForceVec<T2> cast() const {
+    return ForceVec<T2>(couple_.template cast<T2>(),
+                        force_.template cast<T2>());
   }
 
   // Operators
-  ForceVec<T> operator+(const ForceVec<T> & fv) const
-  {
+  ForceVec<T> operator+(const ForceVec<T> &fv) const {
     return ForceVec<T>(couple_ + fv.couple_, force_ + fv.force_);
   }
 
-  ForceVec<T> operator-(const ForceVec<T> & fv) const
-  {
+  ForceVec<T> operator-(const ForceVec<T> &fv) const {
     return ForceVec<T>(couple_ - fv.couple_, force_ - fv.force_);
   }
 
-  ForceVec<T> operator-() const
-  {
-    return ForceVec<T>(-couple_, -force_);
-  }
+  ForceVec<T> operator-() const { return ForceVec<T>(-couple_, -force_); }
 
-  ForceVec<T> & operator+=(const ForceVec<T> & fv)
-  {
+  ForceVec<T> &operator+=(const ForceVec<T> &fv) {
     couple_ += fv.couple_;
     force_ += fv.force_;
     return *this;
   }
 
-  ForceVec<T> & operator-=(const ForceVec<T> & fv)
-  {
+  ForceVec<T> &operator-=(const ForceVec<T> &fv) {
     couple_ -= fv.couple_;
     force_ -= fv.force_;
     return *this;
   }
 
-  template<typename T2, typename std::enable_if<std::is_arithmetic<T2>::value, int>::type = 0>
-  ForceVec<T> operator*(T2 scalar) const
-  {
+  template <typename T2, typename std::enable_if<std::is_arithmetic<T2>::value,
+                                                 int>::type = 0>
+  ForceVec<T> operator*(T2 scalar) const {
     return ForceVec<T>(scalar * couple_, scalar * force_);
   }
 
-  template<typename T2>
-  ForceVec<T> operator/(T2 scalar) const
-  {
+  template <typename T2> ForceVec<T> operator/(T2 scalar) const {
     return ForceVec<T>(couple_ / scalar, force_ / scalar);
   }
 
-  bool operator==(const ForceVec<T> & fv) const
-  {
+  bool operator==(const ForceVec<T> &fv) const {
     return (couple_ == fv.couple_) && (force_ == fv.force_);
   }
 
-  bool operator!=(const ForceVec<T> & fv) const
-  {
+  bool operator!=(const ForceVec<T> &fv) const {
     return (couple_ != fv.couple_) || (force_ != fv.force_);
   }
 
@@ -153,15 +120,13 @@ private:
   vector3_t force_;
 };
 
-template<typename T, typename T2>
-inline ForceVec<T> operator*(T2 scalar, const ForceVec<T> & fv)
-{
+template <typename T, typename T2>
+inline ForceVec<T> operator*(T2 scalar, const ForceVec<T> &fv) {
   return fv * scalar;
 }
 
-template<typename T>
-inline std::ostream & operator<<(std::ostream & out, const ForceVec<T> & fv)
-{
+template <typename T>
+inline std::ostream &operator<<(std::ostream &out, const ForceVec<T> &fv) {
   out << fv.vector().transpose();
   return out;
 }

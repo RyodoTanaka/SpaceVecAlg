@@ -21,14 +21,12 @@ typedef Eigen::Matrix<double, 6, Eigen::Dynamic> Matrix6Xd;
 
 const double TOL = 0.00001;
 
-bool isUpperNull(const Eigen::Matrix3d & m)
-{
+bool isUpperNull(const Eigen::Matrix3d &m) {
   using namespace Eigen;
   return (Matrix3d(m.triangularView<StrictlyUpper>()).array() == 0.).all();
 }
 
-BOOST_AUTO_TEST_CASE(RBInertiadTest)
-{
+BOOST_AUTO_TEST_CASE(RBInertiadTest) {
   using namespace Eigen;
   using namespace sva;
 
@@ -114,8 +112,7 @@ BOOST_AUTO_TEST_CASE(RBInertiadTest)
   BOOST_CHECK(!(rb2 != rb2));
 }
 
-BOOST_AUTO_TEST_CASE(ABInertiadTest)
-{
+BOOST_AUTO_TEST_CASE(ABInertiadTest) {
   using namespace Eigen;
   using namespace sva;
 
@@ -209,8 +206,7 @@ BOOST_AUTO_TEST_CASE(ABInertiadTest)
   BOOST_CHECK(!(ab2 != ab2));
 }
 
-BOOST_AUTO_TEST_CASE(RBInertiadLeftOperatorsTest)
-{
+BOOST_AUTO_TEST_CASE(RBInertiadLeftOperatorsTest) {
   using namespace Eigen;
   using namespace sva;
   double mass = 1.;
@@ -242,15 +238,15 @@ BOOST_AUTO_TEST_CASE(RBInertiadLeftOperatorsTest)
   internal::set_is_malloc_allowed(true);
 
 #ifdef __i386__
-  BOOST_CHECK_SMALL((fVec.vector() - fVecRes6Xd.col(0)).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL((fVec.vector() - fVecRes6Xd.col(0)).array().abs().sum(),
+                    TOL);
 #else
   BOOST_CHECK_EQUAL(fVec.vector(), fVecRes6Xd.col(0));
 #endif
   BOOST_CHECK_EQUAL(fVecRes6Xd.col(0), fVecRes6Xd.col(1));
 }
 
-BOOST_AUTO_TEST_CASE(ABInertiadLeftOperatorsTest)
-{
+BOOST_AUTO_TEST_CASE(ABInertiadLeftOperatorsTest) {
   using namespace Eigen;
   using namespace sva;
   Matrix3d M, H, I;
@@ -296,7 +292,8 @@ BOOST_AUTO_TEST_CASE(ABInertiadLeftOperatorsTest)
   internal::set_is_malloc_allowed(true);
 
 #ifdef __i386__
-  BOOST_CHECK_SMALL((fVec.vector() - fVecRes6Xd.col(0)).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL((fVec.vector() - fVecRes6Xd.col(0)).array().abs().sum(),
+                    TOL);
 #else
   BOOST_CHECK_EQUAL(fVec.vector(), fVecRes6Xd.col(0));
 #endif

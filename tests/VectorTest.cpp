@@ -21,8 +21,7 @@ typedef Eigen::Matrix<double, 6, Eigen::Dynamic> Matrix6Xd;
 
 const double TOL = 0.00001;
 
-BOOST_AUTO_TEST_CASE(MotionVecdTest)
-{
+BOOST_AUTO_TEST_CASE(MotionVecdTest) {
   using namespace Eigen;
   Vector3d w, v;
   Vector6d m;
@@ -88,8 +87,7 @@ BOOST_AUTO_TEST_CASE(MotionVecdTest)
   BOOST_CHECK_EQUAL(sva::MotionVecd::Zero().vector(), Eigen::Vector6d::Zero());
 }
 
-BOOST_AUTO_TEST_CASE(ForceVecdTest)
-{
+BOOST_AUTO_TEST_CASE(ForceVecdTest) {
   using namespace Eigen;
   Vector3d n, f;
   Vector6d m;
@@ -155,8 +153,7 @@ BOOST_AUTO_TEST_CASE(ForceVecdTest)
   BOOST_CHECK_EQUAL(sva::ForceVecd::Zero().vector(), Eigen::Vector6d::Zero());
 }
 
-BOOST_AUTO_TEST_CASE(MotionVecdLeftOperatorsTest)
-{
+BOOST_AUTO_TEST_CASE(MotionVecdLeftOperatorsTest) {
   using namespace Eigen;
   Vector3d w, v, n, f;
   w = Vector3d::Random() * 100.;
@@ -184,11 +181,15 @@ BOOST_AUTO_TEST_CASE(MotionVecdLeftOperatorsTest)
   mm2 = mVec2.vector();
 
   sva::MotionVecd crossM = mVec.cross(mVec2);
-  BOOST_CHECK_SMALL((crossM.vector() - vector6ToCrossMatrix(mm) * mm2).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL(
+      (crossM.vector() - vector6ToCrossMatrix(mm) * mm2).array().abs().sum(),
+      TOL);
 
   // crossDual(MotionVecd, ForceVecd)
   sva::ForceVecd crossF = mVec.crossDual(fVec);
-  BOOST_CHECK_SMALL((crossF.vector() - vector6ToCrossDualMatrix(mm) * mf).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL(
+      (crossF.vector() - vector6ToCrossDualMatrix(mm) * mf).array().abs().sum(),
+      TOL);
 
   // test the vectorized version
   Matrix6Xd crossMVec(6, 2);
@@ -200,7 +201,8 @@ BOOST_AUTO_TEST_CASE(MotionVecdLeftOperatorsTest)
   internal::set_is_malloc_allowed(true);
 
 #ifdef __i386__
-  BOOST_CHECK_SMALL((crossM.vector() - crossMVecRes.col(0)).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL((crossM.vector() - crossMVecRes.col(0)).array().abs().sum(),
+                    TOL);
 #else
   BOOST_CHECK_EQUAL(crossM.vector(), crossMVecRes.col(0));
 #endif
@@ -218,8 +220,7 @@ BOOST_AUTO_TEST_CASE(MotionVecdLeftOperatorsTest)
   BOOST_CHECK_EQUAL(crossFVecRes.col(0), crossFVecRes.col(1));
 }
 
-BOOST_AUTO_TEST_CASE(ImpedanceVecdTest)
-{
+BOOST_AUTO_TEST_CASE(ImpedanceVecdTest) {
   using namespace Eigen;
   Vector3d w, v;
   Vector6d z;
@@ -286,8 +287,14 @@ BOOST_AUTO_TEST_CASE(ImpedanceVecdTest)
 
   // operator *
   sva::ForceVecd fv = vec * mv;
-  BOOST_CHECK_SMALL((fv.force() - vec.linear().cwiseProduct(mv.linear())).array().abs().sum(), TOL);
-  BOOST_CHECK_SMALL((fv.couple() - vec.angular().cwiseProduct(mv.angular())).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL(
+      (fv.force() - vec.linear().cwiseProduct(mv.linear())).array().abs().sum(),
+      TOL);
+  BOOST_CHECK_SMALL((fv.couple() - vec.angular().cwiseProduct(mv.angular()))
+                        .array()
+                        .abs()
+                        .sum(),
+                    TOL);
 
   sva::ForceVecd fv2 = mv * vec;
   BOOST_CHECK_EQUAL(fv, fv2);
@@ -298,11 +305,11 @@ BOOST_AUTO_TEST_CASE(ImpedanceVecdTest)
   BOOST_CHECK_EQUAL(hiv.linear(), Eigen::Vector3d(42., 42., 42.));
 
   // zero
-  BOOST_CHECK_EQUAL(sva::ImpedanceVecd::Zero().vector(), Eigen::Vector6d::Zero());
+  BOOST_CHECK_EQUAL(sva::ImpedanceVecd::Zero().vector(),
+                    Eigen::Vector6d::Zero());
 }
 
-BOOST_AUTO_TEST_CASE(AdmittanceVecdTest)
-{
+BOOST_AUTO_TEST_CASE(AdmittanceVecdTest) {
   using namespace Eigen;
   Vector3d w, v;
   Vector6d a;
@@ -369,8 +376,14 @@ BOOST_AUTO_TEST_CASE(AdmittanceVecdTest)
 
   // operator *
   sva::MotionVecd mv = vec * fv;
-  BOOST_CHECK_SMALL((mv.linear() - vec.linear().cwiseProduct(fv.force())).array().abs().sum(), TOL);
-  BOOST_CHECK_SMALL((mv.angular() - vec.angular().cwiseProduct(fv.couple())).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL(
+      (mv.linear() - vec.linear().cwiseProduct(fv.force())).array().abs().sum(),
+      TOL);
+  BOOST_CHECK_SMALL((mv.angular() - vec.angular().cwiseProduct(fv.couple()))
+                        .array()
+                        .abs()
+                        .sum(),
+                    TOL);
 
   sva::MotionVecd mv2 = fv * vec;
   BOOST_CHECK_EQUAL(mv, mv2);
@@ -381,5 +394,6 @@ BOOST_AUTO_TEST_CASE(AdmittanceVecdTest)
   BOOST_CHECK_EQUAL(hav.linear(), Eigen::Vector3d(42., 42., 42.));
 
   // zero
-  BOOST_CHECK_EQUAL(sva::AdmittanceVecd::Zero().vector(), Eigen::Vector6d::Zero());
+  BOOST_CHECK_EQUAL(sva::AdmittanceVecd::Zero().vector(),
+                    Eigen::Vector6d::Zero());
 }

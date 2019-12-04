@@ -18,13 +18,11 @@
 // SpaceVecAlg
 #include <SpaceVecAlg/Conversions.h>
 
-namespace sva
-{
+namespace sva {
 static constexpr double PI = boost::math::constants::pi<double>();
 }
 
-BOOST_AUTO_TEST_CASE(ConversionsHomogeneous)
-{
+BOOST_AUTO_TEST_CASE(ConversionsHomogeneous) {
   using namespace Eigen;
   using namespace sva;
 
@@ -38,7 +36,8 @@ BOOST_AUTO_TEST_CASE(ConversionsHomogeneous)
   const Vector4d vec(4, 3, 2, 1);
   Matrix4d homVec = Matrix4d::Identity();
   homVec.block<4, 1>(0, 3) = vec;
-  PTransformd ptVec = conversions::fromHomogeneous(homVec, conversions::RightHanded);
+  PTransformd ptVec =
+      conversions::fromHomogeneous(homVec, conversions::RightHanded);
 
   Matrix4d hom2 = conversions::toHomogeneous(pt, conversions::RightHanded);
 
@@ -50,18 +49,20 @@ BOOST_AUTO_TEST_CASE(ConversionsHomogeneous)
   BOOST_CHECK_EQUAL((rotated.block<3, 1>(0, 0)), rotatedPT.translation());
 }
 
-BOOST_AUTO_TEST_CASE(ConversionsEigenTransform)
-{
+BOOST_AUTO_TEST_CASE(ConversionsEigenTransform) {
   using namespace Eigen;
   using namespace sva;
 
-  PTransformd pt(sva::RotX(sva::PI / 2) * sva::RotZ(sva::PI / 4), Eigen::Vector3d(1., 2., 3.));
-  conversions::affine3_t<double> et = conversions::toAffine(pt, conversions::RightHanded);
+  PTransformd pt(sva::RotX(sva::PI / 2) * sva::RotZ(sva::PI / 4),
+                 Eigen::Vector3d(1., 2., 3.));
+  conversions::affine3_t<double> et =
+      conversions::toAffine(pt, conversions::RightHanded);
   PTransformd pt2 = conversions::fromAffine(et, conversions::RightHanded);
 
   BOOST_CHECK_SMALL(sva::transformError(pt, pt2).vector().norm(), 1e-12);
 
-  conversions::affine3_t<double> etL = conversions::toAffine(pt, conversions::LeftHanded);
+  conversions::affine3_t<double> etL =
+      conversions::toAffine(pt, conversions::LeftHanded);
   PTransformd pt3 = conversions::fromAffine(etL, conversions::LeftHanded);
 
   BOOST_CHECK_SMALL(sva::transformError(pt, pt3).vector().norm(), 1e-12);

@@ -2,8 +2,7 @@
 
 #include <iostream>
 
-int main()
-{
+int main() {
   std::cout << sva::PTransformd::Identity() << "\n";
   return 0;
 }

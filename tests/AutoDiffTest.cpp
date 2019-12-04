@@ -36,11 +36,8 @@ scalar_t cos(const scalar_t& t)
 
 // SpaceVecAlg
 #include <SpaceVecAlg/SpaceVecAlg>
-namespace sva
-{
-template<>
-inline Matrix3<scalar_t> RotZ<scalar_t>(scalar_t theta)
-{
+namespace sva {
+template <> inline Matrix3<scalar_t> RotZ<scalar_t>(scalar_t theta) {
   using namespace Eigen;
 
   Matrix3<scalar_t> ret;
@@ -56,8 +53,7 @@ inline Matrix3<scalar_t> RotZ<scalar_t>(scalar_t theta)
 
 using boost::math::constants::pi;
 
-BOOST_AUTO_TEST_CASE(PTransformVsPTransform)
-{
+BOOST_AUTO_TEST_CASE(PTransformVsPTransform) {
   using namespace sva;
   using namespace Eigen;
 
@@ -100,7 +96,8 @@ BOOST_AUTO_TEST_CASE(PTransformVsPTransform)
     rotZ.derivatives()(1) = 1.;
 
     // PTransform<scalar_t> Rot(RotZ(rotZ));
-    PTransform<scalar_t> Rot(AngleAxis<scalar_t>(-rotZ, Vector3<scalar_t>::UnitZ()).matrix());
+    PTransform<scalar_t> Rot(
+        AngleAxis<scalar_t>(-rotZ, Vector3<scalar_t>::UnitZ()).matrix());
     PTransform<scalar_t> Prism(prismY);
 
     PTransform<scalar_t> res = Prism * Rot;

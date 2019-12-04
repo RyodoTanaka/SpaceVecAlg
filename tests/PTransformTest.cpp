@@ -22,32 +22,46 @@ typedef Eigen::Matrix<double, 6, Eigen::Dynamic> Matrix6Xd;
 
 const double TOL = 0.00001;
 
-bool isUpperNull(const Eigen::Matrix3d & m)
-{
+bool isUpperNull(const Eigen::Matrix3d &m) {
   using namespace Eigen;
   return (Matrix3d(m.triangularView<StrictlyUpper>()).array() == 0.).all();
 }
 
-BOOST_AUTO_TEST_CASE(RotationMatrixTest)
-{
+BOOST_AUTO_TEST_CASE(RotationMatrixTest) {
   using namespace Eigen;
   using namespace sva;
 
   Vector2d theta2d = Vector2d::Random() * 10;
   double theta = theta2d(0);
 
-  BOOST_CHECK_SMALL((RotX(theta) - AngleAxisd(-theta, Vector3d::UnitX()).matrix()).array().abs().sum(), TOL);
-  BOOST_CHECK_SMALL((RotY(theta) - AngleAxisd(-theta, Vector3d::UnitY()).matrix()).array().abs().sum(), TOL);
-  BOOST_CHECK_SMALL((RotZ(theta) - AngleAxisd(-theta, Vector3d::UnitZ()).matrix()).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL(
+      (RotX(theta) - AngleAxisd(-theta, Vector3d::UnitX()).matrix())
+          .array()
+          .abs()
+          .sum(),
+      TOL);
+  BOOST_CHECK_SMALL(
+      (RotY(theta) - AngleAxisd(-theta, Vector3d::UnitY()).matrix())
+          .array()
+          .abs()
+          .sum(),
+      TOL);
+  BOOST_CHECK_SMALL(
+      (RotZ(theta) - AngleAxisd(-theta, Vector3d::UnitZ()).matrix())
+          .array()
+          .abs()
+          .sum(),
+      TOL);
 }
 
-BOOST_AUTO_TEST_CASE(PTransformdTest)
-{
+BOOST_AUTO_TEST_CASE(PTransformdTest) {
   using namespace Eigen;
   using namespace sva;
   namespace constants = boost::math::constants;
 
-  Matrix3d Em = AngleAxisd(constants::pi<double>() / 2., Vector3d(1., 0., 0.)).inverse().toRotationMatrix();
+  Matrix3d Em = AngleAxisd(constants::pi<double>() / 2., Vector3d(1., 0., 0.))
+                    .inverse()
+                    .toRotationMatrix();
   Quaterniond Eq;
   Eq = AngleAxisd(constants::pi<double>() / 2., Vector3d(1., 0., 0.)).inverse();
   Vector3d r = Vector3d::Random() * 100.;
@@ -89,8 +103,10 @@ BOOST_AUTO_TEST_CASE(PTransformdTest)
   BOOST_CHECK_EQUAL(pt6.translation(), r);
 
   // operator*(PTransformd)
-  PTransformd pttmp(AngleAxisd(constants::pi<double>() / 4., Vector3d(0., 1., 0.)).toRotationMatrix(),
-                    Vector3d::Random() * 100.);
+  PTransformd pttmp(
+      AngleAxisd(constants::pi<double>() / 4., Vector3d(0., 1., 0.))
+          .toRotationMatrix(),
+      Vector3d::Random() * 100.);
 
   PTransformd pt7 = pt2 * pttmp;
   Matrix6d ptm(pt2.matrix() * pttmp.matrix());
@@ -111,8 +127,7 @@ BOOST_AUTO_TEST_CASE(PTransformdTest)
   BOOST_CHECK(!(pt2 != pt2));
 }
 
-BOOST_AUTO_TEST_CASE(PTransformdLeftOperatorsTest)
-{
+BOOST_AUTO_TEST_CASE(PTransformdLeftOperatorsTest) {
   using namespace Eigen;
   using namespace sva;
   namespace constants = boost::math::constants;
@@ -158,8 +173,10 @@ BOOST_AUTO_TEST_CASE(PTransformdLeftOperatorsTest)
   BOOST_CHECK_SMALL((mvRes1.vector() - mvRes16d).array().abs().sum(), TOL);
 
   // test the angular and linear version
-  BOOST_CHECK_SMALL((mvRes1.angular() - pt.angularMul(mVec)).array().abs().sum(), TOL);
-  BOOST_CHECK_SMALL((mvRes1.linear() - pt.linearMul(mVec)).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL(
+      (mvRes1.angular() - pt.angularMul(mVec)).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL((mvRes1.linear() - pt.linearMul(mVec)).array().abs().sum(),
+                    TOL);
 
   // test the vectorized version
   Matrix6Xd mv1Vec6Xd(6, 2);
@@ -180,8 +197,10 @@ BOOST_AUTO_TEST_CASE(PTransformdLeftOperatorsTest)
   BOOST_CHECK_SMALL((mvRes2.vector() - mvRes26d).array().abs().sum(), TOL);
 
   // test the angular and linear version
-  BOOST_CHECK_SMALL((mvRes2.angular() - pt.angularInvMul(mVec)).array().abs().sum(), TOL);
-  BOOST_CHECK_SMALL((mvRes2.linear() - pt.linearInvMul(mVec)).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL(
+      (mvRes2.angular() - pt.angularInvMul(mVec)).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL(
+      (mvRes2.linear() - pt.linearInvMul(mVec)).array().abs().sum(), TOL);
 
   // test the vectorized version
   Matrix6Xd mv2Vec6Xd(6, 2);
@@ -202,8 +221,10 @@ BOOST_AUTO_TEST_CASE(PTransformdLeftOperatorsTest)
   BOOST_CHECK_SMALL((fvRes1.vector() - fvRes16d).array().abs().sum(), TOL);
 
   // test the couple and force version
-  BOOST_CHECK_SMALL((fvRes1.couple() - pt.coupleDualMul(fVec)).array().abs().sum(), TOL);
-  BOOST_CHECK_SMALL((fvRes1.force() - pt.forceDualMul(fVec)).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL(
+      (fvRes1.couple() - pt.coupleDualMul(fVec)).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL(
+      (fvRes1.force() - pt.forceDualMul(fVec)).array().abs().sum(), TOL);
 
   // test the vectorized version
   Matrix6Xd fv1Vec6Xd(6, 2);
@@ -224,8 +245,10 @@ BOOST_AUTO_TEST_CASE(PTransformdLeftOperatorsTest)
   BOOST_CHECK_SMALL((fvRes2.vector() - fvRes26d).array().abs().sum(), TOL);
 
   // test the couple and force version
-  BOOST_CHECK_SMALL((fvRes2.couple() - pt.coupleTransMul(fVec)).array().abs().sum(), TOL);
-  BOOST_CHECK_SMALL((fvRes2.force() - pt.forceTransMul(fVec)).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL(
+      (fvRes2.couple() - pt.coupleTransMul(fVec)).array().abs().sum(), TOL);
+  BOOST_CHECK_SMALL(
+      (fvRes2.force() - pt.forceTransMul(fVec)).array().abs().sum(), TOL);
 
   // test the vectorized version
   Matrix6Xd fv2Vec6Xd(6, 2);
@@ -264,40 +287,51 @@ BOOST_AUTO_TEST_CASE(PTransformdLeftOperatorsTest)
   BOOST_CHECK_SMALL((abRes2.matrix() - abRes26d).array().abs().sum(), TOL);
 }
 
-BOOST_AUTO_TEST_CASE(EulerAngleTest)
-{
+BOOST_AUTO_TEST_CASE(EulerAngleTest) {
   using namespace Eigen;
   using namespace sva;
   namespace cst = boost::math::constants;
 
   Vector3d res;
 
-  res = rotationError<double>(Matrix3d::Identity(), RotX(cst::pi<double>() / 2.));
-  BOOST_CHECK_SMALL((res - Vector3d(cst::pi<double>() / 2., 0., 0.)).norm(), TOL);
+  res =
+      rotationError<double>(Matrix3d::Identity(), RotX(cst::pi<double>() / 2.));
+  BOOST_CHECK_SMALL((res - Vector3d(cst::pi<double>() / 2., 0., 0.)).norm(),
+                    TOL);
 
-  res = rotationError<double>(Matrix3d::Identity(), RotY(cst::pi<double>() / 2.));
-  BOOST_CHECK_SMALL((res - Vector3d(0., cst::pi<double>() / 2., 0.)).norm(), TOL);
+  res =
+      rotationError<double>(Matrix3d::Identity(), RotY(cst::pi<double>() / 2.));
+  BOOST_CHECK_SMALL((res - Vector3d(0., cst::pi<double>() / 2., 0.)).norm(),
+                    TOL);
 
-  res = rotationError<double>(Matrix3d::Identity(), RotZ(cst::pi<double>() / 2.));
-  BOOST_CHECK_SMALL((res - Vector3d(0., 0., cst::pi<double>() / 2.)).norm(), TOL);
+  res =
+      rotationError<double>(Matrix3d::Identity(), RotZ(cst::pi<double>() / 2.));
+  BOOST_CHECK_SMALL((res - Vector3d(0., 0., cst::pi<double>() / 2.)).norm(),
+                    TOL);
 
-  res = rotationError<double>(RotZ(cst::pi<double>() / 4.), RotZ(cst::pi<double>() / 2.));
-  BOOST_CHECK_SMALL((res - Vector3d(0., 0., cst::pi<double>() / 4.)).norm(), TOL);
+  res = rotationError<double>(RotZ(cst::pi<double>() / 4.),
+                              RotZ(cst::pi<double>() / 2.));
+  BOOST_CHECK_SMALL((res - Vector3d(0., 0., cst::pi<double>() / 4.)).norm(),
+                    TOL);
 }
 
-BOOST_AUTO_TEST_CASE(InterpolateTest)
-{
+BOOST_AUTO_TEST_CASE(InterpolateTest) {
   using namespace Eigen;
   using namespace sva;
   namespace cst = boost::math::constants;
 
   PTransformd from(Matrix3d::Identity(), Vector3d(0., 0., 0.));
-  PTransformd to(AngleAxisd(cst::pi<double>(), Vector3d::UnitZ()).toRotationMatrix(), Vector3d(1., 2., -3.));
+  PTransformd to(
+      AngleAxisd(cst::pi<double>(), Vector3d::UnitZ()).toRotationMatrix(),
+      Vector3d(1., 2., -3.));
 
   PTransformd res = interpolate<double>(from, to, 0.5);
 
-  BOOST_CHECK_SMALL((res.rotation() - AngleAxisd(cst::pi<double>() / 2., Vector3d::UnitZ()).toRotationMatrix()).norm(),
-                    TOL);
+  BOOST_CHECK_SMALL(
+      (res.rotation() -
+       AngleAxisd(cst::pi<double>() / 2., Vector3d::UnitZ()).toRotationMatrix())
+          .norm(),
+      TOL);
   BOOST_CHECK_SMALL((res.translation() - Vector3d(0.5, 1., -1.5)).norm(), TOL);
 
   res = interpolate<double>(from, to, 0);
@@ -309,21 +343,24 @@ BOOST_AUTO_TEST_CASE(InterpolateTest)
   BOOST_CHECK_SMALL((res.translation() - to.translation()).norm(), TOL);
 }
 
-BOOST_AUTO_TEST_CASE(TransformError)
-{
+BOOST_AUTO_TEST_CASE(TransformError) {
   using namespace Eigen;
   using namespace sva;
   namespace cst = boost::math::constants;
 
-  PTransformd X_a_b(Quaterniond(Vector4d::Random()).normalized(), Vector3d::Random());
-  PTransformd X_a_c(Quaterniond(Vector4d::Random()).normalized(), Vector3d::Random());
+  PTransformd X_a_b(Quaterniond(Vector4d::Random()).normalized(),
+                    Vector3d::Random());
+  PTransformd X_a_c(Quaterniond(Vector4d::Random()).normalized(),
+                    Vector3d::Random());
 
   MotionVecd V_a_b = transformVelocity(X_a_b);
   MotionVecd V_a_c = transformVelocity(X_a_c);
 
-  BOOST_CHECK_SMALL((V_a_b.angular() - rotationVelocity(X_a_b.rotation())).norm(), TOL);
+  BOOST_CHECK_SMALL(
+      (V_a_b.angular() - rotationVelocity(X_a_b.rotation())).norm(), TOL);
   BOOST_CHECK_SMALL((V_a_b.linear() - X_a_b.translation()).norm(), TOL);
-  BOOST_CHECK_SMALL((V_a_c.angular() - rotationVelocity(X_a_c.rotation())).norm(), TOL);
+  BOOST_CHECK_SMALL(
+      (V_a_c.angular() - rotationVelocity(X_a_c.rotation())).norm(), TOL);
   BOOST_CHECK_SMALL((V_a_c.linear() - X_a_c.translation()).norm(), TOL);
 
   MotionVecd V_b_c_a = transformError(X_a_b, X_a_c);
@@ -334,16 +371,14 @@ BOOST_AUTO_TEST_CASE(TransformError)
   BOOST_CHECK_SMALL((V_b_c_a.linear() - v_b_c_a).norm(), TOL);
 }
 
-BOOST_AUTO_TEST_CASE(sincTest)
-{
+BOOST_AUTO_TEST_CASE(sincTest) {
   auto dummy_sinc = [](double x) { return std::sin(x) / x; };
   double eps = std::numeric_limits<double>::epsilon();
 
   // test equality between -1 and 1 (avoid 0)
   double t = -1.;
   const int nrIter = 333;
-  for(int i = 0; i < nrIter; ++i)
-  {
+  for (int i = 0; i < nrIter; ++i) {
     BOOST_CHECK_EQUAL(dummy_sinc(t), sva::sinc(t));
     t += 2. / nrIter;
   }
@@ -353,19 +388,18 @@ BOOST_AUTO_TEST_CASE(sincTest)
   // not sure thoses test will work on all architectures
   BOOST_CHECK_EQUAL(dummy_sinc(eps), sva::sinc(eps));
   BOOST_CHECK_EQUAL(dummy_sinc(std::sqrt(eps)), sva::sinc(std::sqrt(eps)));
-  BOOST_CHECK_EQUAL(dummy_sinc(std::sqrt(std::sqrt(eps))), sva::sinc(std::sqrt(std::sqrt(eps))));
+  BOOST_CHECK_EQUAL(dummy_sinc(std::sqrt(std::sqrt(eps))),
+                    sva::sinc(std::sqrt(std::sqrt(eps))));
 }
 
-BOOST_AUTO_TEST_CASE(sinc_invTest)
-{
+BOOST_AUTO_TEST_CASE(sinc_invTest) {
   auto dummy_sinc_inv = [](double x) { return x / std::sin(x); };
   double eps = std::numeric_limits<double>::epsilon();
 
   // test equality between -1 and 1 (avoid 0)
   double t = -1.;
   const int nrIter = 333;
-  for(int i = 0; i < nrIter; ++i)
-  {
+  for (int i = 0; i < nrIter; ++i) {
     BOOST_CHECK_EQUAL(dummy_sinc_inv(t), sva::sinc_inv(t));
     t += 2. / nrIter;
   }
@@ -374,32 +408,32 @@ BOOST_AUTO_TEST_CASE(sinc_invTest)
 
   // not sure thoses test will work on all architectures
   BOOST_CHECK_EQUAL(dummy_sinc_inv(eps), sva::sinc_inv(eps));
-  BOOST_CHECK_EQUAL(dummy_sinc_inv(std::sqrt(eps)), sva::sinc_inv(std::sqrt(eps)));
-  BOOST_CHECK_EQUAL(dummy_sinc_inv(std::sqrt(std::sqrt(eps))), sva::sinc_inv(std::sqrt(std::sqrt(eps))));
+  BOOST_CHECK_EQUAL(dummy_sinc_inv(std::sqrt(eps)),
+                    sva::sinc_inv(std::sqrt(eps)));
+  BOOST_CHECK_EQUAL(dummy_sinc_inv(std::sqrt(std::sqrt(eps))),
+                    sva::sinc_inv(std::sqrt(std::sqrt(eps))));
 }
 
-template<typename T>
-inline Eigen::Vector3<T> oldRotationVelocity(const Eigen::Matrix3<T> & E_a_b, double prec)
-{
+template <typename T>
+inline Eigen::Vector3<T> oldRotationVelocity(const Eigen::Matrix3<T> &E_a_b,
+                                             double prec) {
   Eigen::Vector3<T> w;
   T acosV = (E_a_b(0, 0) + E_a_b(1, 1) + E_a_b(2, 2) - 1.) * 0.5;
   T theta = std::acos(acosV);
 
-  if(E_a_b.isIdentity(prec))
-  {
+  if (E_a_b.isIdentity(prec)) {
     w.setZero();
-  }
-  else
-  {
-    w = Eigen::Vector3<T>(-E_a_b(2, 1) + E_a_b(1, 2), -E_a_b(0, 2) + E_a_b(2, 0), -E_a_b(1, 0) + E_a_b(0, 1));
+  } else {
+    w = Eigen::Vector3<T>(-E_a_b(2, 1) + E_a_b(1, 2),
+                          -E_a_b(0, 2) + E_a_b(2, 0),
+                          -E_a_b(1, 0) + E_a_b(0, 1));
     w *= theta / (2. * std::sin(theta));
   }
 
   return w;
 }
 
-BOOST_AUTO_TEST_CASE(oldVsNewRotationVelocity)
-{
+BOOST_AUTO_TEST_CASE(oldVsNewRotationVelocity) {
   using namespace Eigen;
   using namespace sva;
 
